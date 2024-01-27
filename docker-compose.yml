@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+    # image project
+    rabbitmq_doc:
+        build:
+            args:
+                user: milena
+                uid: 1000
+            context: .
+            dockerfile: Dockerfile
+        # restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        networks:
+            - rabbitmq_network
+
+    # nginx
+    nginx:
+        image: nginx:alpine
+        # restart: unless-stopped
+        ports:
+            - "8989:80"
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/:/etc/nginx/conf.d/
+        networks:
+            - rabbitmq_network
+
+networks:
+    rabbitmq_network:
+        driver: bridge
